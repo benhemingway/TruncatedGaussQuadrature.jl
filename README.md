@@ -1,0 +1,1 @@
+# TruncatedGaussQuadrature.jl
