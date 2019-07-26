@@ -18,7 +18,7 @@ using LinearAlgebra # Hermitian, chol, permute, eigen
 include("normalDistMoment.jl")
 include("momentGaussQuad.jl")
 
-export truncatedGaussQuad, normalDistMoment, momentGaussQuad, buildHankel
+export truncatedGaussQuad, normalDistMoment, momentGaussQuad, buildHankel, spdMatrix
 
 
 function truncatedGaussQuad(μ::Real, σ::Real, lb::Real, ub::Real, n::Int)
@@ -45,7 +45,7 @@ function buildHankel(mm::Array{T,1}) where T<:Real
   for i = 1:n+1
     M[:,i] = mm[i:i+n]
   end
-  # isposdef(M) || warn("Matrix M is not positive definite")
+  isposdef(M) || M = spdMatrix(M)
   return M
 end
 
