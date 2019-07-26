@@ -17,6 +17,7 @@ using LinearAlgebra # Hermitian, chol, permute, eigen
 # include Distributions # loads other packages that subsequent code depends ons
 include("normalDistMoment.jl")
 include("momentGaussQuad.jl")
+include("spd.jl")
 
 export truncatedGaussQuad, normalDistMoment, momentGaussQuad, buildHankel, spdMatrix
 
@@ -45,7 +46,10 @@ function buildHankel(mm::Array{T,1}) where T<:Real
   for i = 1:n+1
     M[:,i] = mm[i:i+n]
   end
-  isposdef(M) || M = spdMatrix(M)
+  if  isposdef(M)
+  else
+      M = spdMatrix(M)
+  end
   return M
 end
 
