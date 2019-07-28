@@ -28,15 +28,8 @@ end
 function _normalDistMoment(μ::Real,σ::Real, n::Int, l::Real, u::Real)
 
   f0 = Distributions.Normal(0,1)
-  mom = Array{Float64,1}(undef,n+1)
+  mom = zeros(n+1)
   mom[1] = 1.0
-  for i = 1:n
-    mom[i+1]=0.0
-  end
-
-  if n<1
-    Void
-  end
 
   if l>-Inf && u<Inf # If the distribution is doubly truncated
     α = (l - μ)/σ
@@ -109,10 +102,6 @@ function _normalDistMoment(n::Int, α::Real, β::Real)
   f0 = Distributions.Normal(0,1)
   mom = zeros(n+1)
   mom[1] = 1.0
-
-  if n<1
-    Void
-  end
 
   if α>-Inf && β<Inf # If the distribution is doubly truncated
 

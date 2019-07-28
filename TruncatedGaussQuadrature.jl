@@ -22,32 +22,31 @@ include("spd.jl")
 export truncatedGaussQuad, normalDistMoment, momentGaussQuad, buildHankel, spdMatrix
 
 
-function truncatedGaussQuad(μ::Real, σ::Real, lb::Real, ub::Real, n::Int)
+function truncatedGaussQuad(μ::Real, σ::Real, lb::Real, ub::Real, n::Int;matrixFix::Bool=true)
 
   # 1) Calculate moments
   mm = normalDistMoment(μ, σ, 2n, lb, ub)
   # 2) Build Hankel Matrix
-  M = buildHankel(mm)
+  M = buildHankel(mm,matrixFix)
   # 3) Calculate nodes:
   x, w = momentGaussQuad(M)
   return x, w
 end
 
-function truncatedGaussQuad(lb::Real, ub::Real, n::Int)
+function truncatedGaussQuad(lb::Real, ub::Real, n::Int;matrixFix::Bool=true)
   # N(0,1)
-  x, w = truncatedGaussQuad(0.0,1.0,lb,ub,n)
+  x, w = truncatedGaussQuad(0.0,1.0,lb,ub,n,matrixFix=matrixFix)
   return x, w
 end
 
 
-function buildHankel(mm::Array{T,1}) where T<:Real
+function buildHankel(mm::Array{T,1},matrixFix::Bool) where T<:Real
   n = div((length(mm)-1),2)
   M = zeros(eltype(mm),n+1,n+1)
   for i = 1:n+1
     M[:,i] = mm[i:i+n]
   end
-  if  isposdef(M)
-  else
+  if  ~isposdef(M) && matrixFix
       M = spdMatrix(M)
   end
   return M
